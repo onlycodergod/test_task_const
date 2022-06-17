@@ -1,6 +1,4 @@
 linters-settings:
-  gci:
-    local-prefixes: github.com/evrone/go-clean-template
   dupl:
     threshold: 100
   errorlint:
@@ -11,43 +9,34 @@ linters-settings:
   exhaustive:
     check-generated: false
     default-signifies-exhaustive: false
-  funlen:
-    lines: 65
-    statements: 40
-  gocognit:
-    min-complexity: 15
-  gocyclo:
-    min-complexity: 10
-  goconst:
-    min-len: 2
-    min-occurrences: 2
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
+    govet:
+      check-shadowing: true
+    goconst:
+      min-len: 2
+      min-occurrences: 2
+    # gocritic:
+    #   enabled-tags:
+    #     - diagnostic
+    #     - experimental
+    #     - opinionated
+    #     - performance
+    #     - style
     disabled-checks:
       - dupImport
       - unnecessaryBlock
-  gofumpt:
-    extra-rules: true
-  gomnd:
-    settings:
-      mnd:
-        checks:
-          - argument
-          - case
-          - condition
-          - operation
-          - return
-  govet:
-    check-shadowing: true
+  # gofumpt:
+  #   extra-rules: true
+  # gomnd:
+  #   settings:
+  #     mnd:
+  #       checks:
+  #         - argument
+  #         - case
+  #         - condition
+  #         - operation
+  #         - return
   misspell:
     locale: US
-  nestif:
-    min-complexity: 4
   nolintlint:
     require-explanation: true
     require-specific: true
@@ -56,7 +45,6 @@ linters:
   disable-all: true
   enable:
     - asciicheck
-    - bodyclose
     - cyclop
     - deadcode
     - depguard
@@ -68,21 +56,18 @@ linters:
     - exhaustive
     - exportloopref
     - forbidigo
-    - funlen
-    - gci
     - gochecknoglobals
     - gochecknoinits
     - gocognit
     - goconst
-    - gocritic
+    # - gocritics
     - gocyclo
-    - godot
-    - godox
-    - goerr113
+    # - godot
+    # - godox
     - gofmt
-    - gofumpt
+    # - gofumpt
     - goimports
-    - gomnd
+    # - gomnd
     - gomodguard
     - goprintffuncname
     - gosec
@@ -94,24 +79,17 @@ linters:
     - nakedret
     - nestif
     - nlreturn
-    - noctx
     - nolintlint
     - paralleltest
     - predeclared
     - revive
-    - rowserrcheck
-    - sqlclosecheck
     - staticcheck
-    - structcheck
     - stylecheck
-    - tparallel
     - thelper
     - typecheck
     - unconvert
-    - unparam
     - unused
     - varcheck
-    - wsl
     - whitespace
 
 # disable:
@@ -122,16 +100,15 @@ linters:
 #    - testpackage
 #    - wrapcheck
 
-issues:
-  exclude-rules:
-    - path: integration-test
-      linters:
-        - paralleltest
-        - godot
-    - path: internal/controller/http
-      linters:
-        - godot
-
 run:
+  deadline: 10m
+  issues-exit-code: 1
+  tests: true
   skip-dirs:
-    - docs
+    - bin
+    - vendor
+    - var
+    - tmp
+    - internal/generated
+  skip-files:
+    - ".*\\_test\\.go$"

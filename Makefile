@@ -36,3 +36,7 @@ compose-down:
 remove-volumes:
 	docker system prune -a --volumes
 .PHONY: remove-volumes
+
+linter-golangci:
+	CGO_ENABLED=0 golangci-lint run
+.PHONY: linter-golangci
