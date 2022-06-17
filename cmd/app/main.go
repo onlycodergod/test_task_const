@@ -9,9 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/onlycodergod/payment-api-emulator/config"
-	"github.com/onlycodergod/payment-api-emulator/internal/controller"
-	"github.com/onlycodergod/payment-api-emulator/internal/repository"
-	"github.com/onlycodergod/payment-api-emulator/internal/usecase"
+	"github.com/onlycodergod/payment-api-emulator/internal/payment"
 	"github.com/onlycodergod/payment-api-emulator/pkg/db/postgres"
 	"github.com/onlycodergod/payment-api-emulator/pkg/http/server"
 	"github.com/onlycodergod/payment-api-emulator/pkg/loggin"
@@ -57,9 +55,9 @@ func main() {
 	)
 
 	// Layers
-	repo := repository.NewPaymentRepository(pg)
-	usc := usecase.NewPaymentUseCase(repo)
-	con := controller.NewPaymentController(
+	repo := payment.NewPaymentRepository(pg)
+	usc := payment.NewPaymentusecase(repo)
+	con := payment.NewPaymentController(
 		logger,
 		usc,
 	)
