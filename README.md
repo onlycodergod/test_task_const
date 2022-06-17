@@ -39,8 +39,9 @@ func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 ```
-```go
+
    2. "/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id
+```go
 func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
 	if err != nil {
@@ -190,7 +191,7 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
     3. https://github.com/digitalocean
  ```
  
- Дизайн архитектуры и работы транзакций
+ Дизайн архитектуры и работы транзакций исходя из технического задания:
 ```
 ![photo_diagram_project](https://user-images.githubusercontent.com/72939315/174302662-8be838d9-4271-40d0-9acb-384aaf0b0fae.jpg)
 ```
