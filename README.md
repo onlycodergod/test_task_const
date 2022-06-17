@@ -41,6 +41,7 @@ func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 ```
 
    2. "/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id
+
 ```go
 func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
@@ -70,9 +71,10 @@ func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 }
+```
 
     3. "/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
-    
+   
 ```go
 func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
@@ -99,6 +101,7 @@ func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 		},
 	)
 }
+```
 
     4. "/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
     
@@ -130,6 +133,7 @@ func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 		},
 	)
 }
+```
 
     5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
     
@@ -161,6 +165,7 @@ func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 		},
 	)
 }
+```
 
     6. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
     
@@ -186,10 +191,11 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 }
+```
 
  Архитектура проекта из соображений:
  
- ```git
+ ```
     1. https://github.com/golang-standards/project-layout
     2. https://github.com/moby/moby
     3. https://github.com/digitalocean
