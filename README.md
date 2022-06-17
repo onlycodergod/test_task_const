@@ -6,15 +6,16 @@ CamelCase
 ```
  Что нужно для запуска проекта:
     1. Docker
-    2. Docker-compose (version by - support 3.9 verion file)
+    2. Docker-compose v3.9+
 
  Запуск проекта:
  ```sh
     1. sudo make compose-up
 ```
 
- API 
+### API 
    1. "/payment", Method: POST - создает транзакцию, request body params: {"user_id": type int, "amount": type decimal, "user_email": type varchar, "currency": type varchar}
+
 ```go
 func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var input PaymentInput
@@ -39,8 +40,10 @@ func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 ```
+
+ ###  2. "/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id
+
 ```go
-   2. "/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id
 func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
 	if err != nil {
@@ -70,7 +73,9 @@ func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 ```
-    3. "/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
+
+ ###   3. "/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
+   
 ```go
 func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
@@ -98,7 +103,9 @@ func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 	)
 }
 ```
-    4. "/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
+
+ ###   4. "/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
+    
 ```go
 func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
 	userID, err := GetQueryId(r)
@@ -128,7 +135,9 @@ func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 	)
 }
 ```
-    5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
+
+###   5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
+    
 ```go
 func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
 	UserEmail := r.URL.Query().Get("email")
@@ -158,7 +167,9 @@ func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 	)
 }
 ```
-    6. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
+
+###    6. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
+    
 ```go
 func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 	PaymentID, err := GetQueryId(r)
@@ -183,15 +194,14 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
- Архитектура проекта из соображений:
- ```git
+### Архитектура проекта из соображений:
+ 
+ ```
     1. https://github.com/golang-standards/project-layout
     2. https://github.com/moby/moby
     3. https://github.com/digitalocean
  ```
  
- Дизайн архитектуры и работы транзакций
-```
- <a href="https://ibb.co/w7PHgQ4" target="_blank"><img src="https://i.ibb.co/xYBvLg6/photo-diagram-project.jpg" target="_blank"></a> 
-```
-
+### Дизайн архитектуры и работы транзакций исходя из технического задания:
+ 
+![photo_diagram_project](https://user-images.githubusercontent.com/72939315/174303511-ede1aea8-2c1f-45c0-a0fb-a94cfb89cb2d.jpg)
