@@ -1,0 +1,10 @@
+http:
+  port: "8080"
+  writeTimeout: 5
+  readTimeout: 5
+  shutdownTimeout: 3
+
+logger:
+  debug: false
+
+
