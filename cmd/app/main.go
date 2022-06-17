@@ -9,14 +9,16 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/onlycodergod/payment-api-emulator/config"
-	"github.com/onlycodergod/payment-api-emulator/internal/payment"
+	"github.com/onlycodergod/payment-api-emulator/internal/controller"
+	"github.com/onlycodergod/payment-api-emulator/internal/repository"
+	"github.com/onlycodergod/payment-api-emulator/internal/usecase"
 	"github.com/onlycodergod/payment-api-emulator/pkg/db/postgres"
 	"github.com/onlycodergod/payment-api-emulator/pkg/http/server"
 	"github.com/onlycodergod/payment-api-emulator/pkg/loggin"
 )
 
-// Он создает новый объект конфигурации, и в случае сбоя он регистрирует ошибку и выходит из программы.
 func main() {
+	// Config
 	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatalf("config initialization error: %s", err.Error())
@@ -35,52 +37,60 @@ func main() {
 		SSLmode:  cfg.Postgres.SSLMode,
 	}
 
-	pg, err := postgres.NewPostgres(dbOptions).Connect()
+	db := postgres.NewPostgres(
+		dbOptions,
+		cfg.Postgres.ConnAttempts,
+		time.Duration(cfg.Postgres.ConnTimeout)*time.Second,
+	)
+
+	pg, err := db.Connect()
 	if err != nil {
 		logger.Fatalf("postgres connection failed, %s", err.Error())
 	}
+
 	defer pg.Close()
 
-	// Миграция базы данных.
+	// Scheme migrate
 	postgres.InitMigrate(
 		logger,
 		dbOptions,
 	)
 
-	// Создание нового репозитория платежей, варианта использования и контроллера.
-	rep := payment.NewPaymentRepository(pg)
-	usc := payment.NewPaymentUseCase(rep)
-	con := payment.NewPaymentController(
+	// Layers
+	repo := repository.NewPaymentRepository(pg)
+	usc := usecase.NewPaymentUseCase(repo)
+	con := controller.NewPaymentController(
 		logger,
 		usc,
 	)
 
-	// Создание нового маршрутизатора и http-сервера.
+	// HTTP-Server
 	router := mux.NewRouter()
 
-	httpServer := server.NewHttpServer(
+	httpServer := server.NewHTTPServer(
 		con.Register(router),
 		cfg.HTTP.Port,
-		time.Duration(cfg.HTTP.ReadTimeout),
-		time.Duration(cfg.HTTP.WriteTimeout),
-		time.Duration(cfg.HTTP.ShutdownTimeout),
+		time.Duration(cfg.HTTP.ReadTimeout)*time.Second,
+		time.Duration(cfg.HTTP.WriteTimeout)*time.Second,
+		time.Duration(cfg.HTTP.ShutdownTimeout)*time.Second,
 	)
 
 	logger.Infof("http server created and started at http://localhost:%s", cfg.HTTP.Port)
 
-	// Обработчик сигнала.
+	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	select {
 	case s := <-interrupt:
 		logger.Infof("app - run - signal: %s", s.String())
-	case err := <-httpServer.Notify():
+	case err = <-httpServer.Notify():
 		logger.Errorf("app - run - httpServer.Notify: %s", err.Error())
 	}
 
-	// Грамотное завершение работы сервера. (Shutdown)
+	// Shutdown
 	err = httpServer.Shutdown()
+
 	if err != nil {
 		logger.Errorf("app - run - httpServer.Shutdown: %s", err.Error())
 	}

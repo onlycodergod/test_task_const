@@ -8,21 +8,21 @@ import (
 	"github.com/onlycodergod/payment-api-emulator/pkg/loggin"
 )
 
-// > Тип контроллера — это структура с интерфейсом PaymentUseCase и интерфейсом регистратора.
-// @property {PaymentUseCase} UseCase - Это интерфейс, который определяет методы, которые контроллер
+// > Тип контроллера — это структура с интерфейсом Paymentusecase и интерфейсом регистратора.
+// @property {Paymentusecase} usecase - Это интерфейс, который определяет методы, которые контроллер
 // будет использовать для взаимодействия с вариантом использования.
 // @property logger - Это регистратор, который будет использоваться для регистрации ошибок и другой
 // информации.
 type controller struct {
-	UseCase PaymentUseCase
+	usecase Paymentusecase
 	logger  loggin.ILogger
 }
 
 // > Эта функция создает новый экземпляр структуры контроллера и возвращает указатель на него
-func NewPaymentController(l loggin.ILogger, u PaymentUseCase) *controller {
+func NewPaymentController(l loggin.ILogger, u Paymentusecase) *controller {
 	return &controller{
 		logger:  l,
-		UseCase: u,
+		usecase: u,
 	}
 }
 
@@ -67,7 +67,7 @@ func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Это вызов метода варианта использования, который создает платеж.
-	id, err := c.UseCase.CreatePayment(
+	id, err := c.usecase.CreatePayment(
 		r.Context(),
 		input,
 	)
@@ -105,7 +105,7 @@ func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 
 	input.ID = PaymentID
 
-	err = c.UseCase.UpdateStatus(
+	err = c.usecase.UpdateStatus(
 		r.Context(),
 		input,
 	)
@@ -129,7 +129,7 @@ func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := c.UseCase.GetStatus(
+	status, err := c.usecase.GetStatus(
 		r.Context(),
 		PaymentID,
 	)
@@ -158,7 +158,7 @@ func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	data, err := c.UseCase.GetPayments(
+	data, err := c.usecase.GetPayments(
 		r.Context(),
 		PaymentUser{
 			UserEmail: UserEmail,
@@ -189,7 +189,7 @@ func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	data, err := c.UseCase.GetPayments(
+	data, err := c.usecase.GetPayments(
 		r.Context(),
 		PaymentUser{
 			UserID: userID,
@@ -219,7 +219,7 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.UseCase.CancelPayment(
+	err = c.usecase.CancelPayment(
 		r.Context(),
 		PaymentID,
 	)

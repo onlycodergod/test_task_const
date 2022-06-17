@@ -6,22 +6,22 @@ import (
 	"sync"
 )
 
-// UseCase — это структура с полем repo типа PaymentRepository.
+// usecase — это структура с полем repo типа PaymentRepository.
 // @property {PaymentRepository} repo - Это репозиторий, который будет использоваться для хранения
 // платежа.
-type UseCase struct {
+type usecase struct {
 	repo PaymentRepository
 }
 
-// > Эта функция создает новый экземпляр структуры UseCase и возвращает указатель на нее.
-func NewPaymentUseCase(repo PaymentRepository) *UseCase {
-	return &UseCase{
+// > Эта функция создает новый экземпляр структуры usecase и возвращает указатель на нее.
+func NewPaymentusecase(repo PaymentRepository) *usecase {
+	return &usecase{
 		repo: repo,
 	}
 }
 
 // Эта функция используется для создания нового платежа.
-func (u *UseCase) CreatePayment(ctx context.Context, input PaymentInput) (int64, error) {
+func (u *usecase) CreatePayment(ctx context.Context, input PaymentInput) (int64, error) {
 	PaymentID, err := u.repo.CreatePayment(
 		ctx,
 		input,
@@ -50,7 +50,7 @@ func (u *UseCase) CreatePayment(ctx context.Context, input PaymentInput) (int64,
 }
 
 // Эта функция используется для обновления статуса платежа.
-func (u *UseCase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
+func (u *usecase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 	ErrorExeption := make(chan error)
 	uCtx, cancel := context.WithCancel(ctx)
 
@@ -64,7 +64,7 @@ func (u *UseCase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 		}
 
 		if status == StatusSuccess || status == StatusFailure {
-			ErrorExeption <- fmt.Errorf("payment-UseCase-UpdateStatus-GetStatus, terminal status %s", status)
+			ErrorExeption <- fmt.Errorf("payment-usecase-UpdateStatus-GetStatus, terminal status %s", status)
 		}
 	}()
 
@@ -79,7 +79,7 @@ func (u *UseCase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 		}
 
 		if err := checkTerminalStatusRow(r); err != nil {
-			ErrorExeption <- fmt.Errorf("payment-UseCase-UpdateStatus, %s", err.Error())
+			ErrorExeption <- fmt.Errorf("payment-usecase-UpdateStatus, %s", err.Error())
 		}
 
 		cancel()
@@ -94,7 +94,7 @@ func (u *UseCase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 }
 
 // Эта функция используется для получения статуса платежа.
-func (u *UseCase) GetStatus(ctx context.Context, PaymentID int64) (string, error) {
+func (u *usecase) GetStatus(ctx context.Context, PaymentID int64) (string, error) {
 	return u.repo.GetStatus(
 		ctx,
 		PaymentID,
@@ -102,7 +102,7 @@ func (u *UseCase) GetStatus(ctx context.Context, PaymentID int64) (string, error
 }
 
 // Эта функция используется для получения всех платежей для пользователя.
-func (u *UseCase) GetPayments(ctx context.Context, input PaymentUser) ([]payment, error) {
+func (u *usecase) GetPayments(ctx context.Context, input PaymentUser) ([]payment, error) {
 	return u.repo.GetPayments(
 		ctx,
 		input,
@@ -110,7 +110,7 @@ func (u *UseCase) GetPayments(ctx context.Context, input PaymentUser) ([]payment
 }
 
 // Эта функция используется для отмены платежа.
-func (u *UseCase) CancelPayment(ctx context.Context, PaymentID int64) error {
+func (u *usecase) CancelPayment(ctx context.Context, PaymentID int64) error {
 	ErrorExeption := make(chan error)
 	dCtx, cancel := context.WithCancel(ctx)
 
@@ -124,7 +124,7 @@ func (u *UseCase) CancelPayment(ctx context.Context, PaymentID int64) error {
 		}
 
 		if status == StatusSuccess || status == StatusFailure {
-			ErrorExeption <- fmt.Errorf("payment-UseCase-CancelPayment-GetStatus, terminal status %s", status)
+			ErrorExeption <- fmt.Errorf("payment-usecase-CancelPayment-GetStatus, terminal status %s", status)
 		}
 	}()
 
@@ -139,7 +139,7 @@ func (u *UseCase) CancelPayment(ctx context.Context, PaymentID int64) error {
 		}
 
 		if err := checkTerminalStatusRow(r); err != nil {
-			ErrorExeption <- fmt.Errorf("payment-UseCase-deletePayment, %s", err.Error())
+			ErrorExeption <- fmt.Errorf("payment-usecase-deletePayment, %s", err.Error())
 		}
 
 		cancel()

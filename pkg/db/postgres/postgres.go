@@ -1,24 +1,27 @@
 package postgres
 
 import (
+	"context"
 	"database/sql"
+	"log"
+	"time"
 )
 
-// `postgres` — это тип, который имеет поле, называемое `options` типа `DBOptions`.
-// @property {DBOptions} options - Это параметры, которые передаются в базу данных.
-type postgres struct {
-	options DBOptions
+type Postgres struct {
+	options      DBOptions
+	connAttempts int
+	connTimeout  time.Duration
 }
 
-// Он создает новый объект postgres с переданными параметрами.
-func NewPostgres(options DBOptions) *postgres {
-	return &postgres{
-		options: options,
+func NewPostgres(options DBOptions, connAttempts int, connTimeout time.Duration) *Postgres {
+	return &Postgres{
+		options:      options,
+		connAttempts: connAttempts,
+		connTimeout:  connTimeout,
 	}
 }
 
-// Метод коннекта к нашей database postgres.
-func (p *postgres) Connect() (*sql.DB, error) {
+func (p *Postgres) Connect() (*sql.DB, error) {
 	dsn := getDSN(p.options)
 
 	db, err := sql.Open("postgres", dsn)
@@ -26,9 +29,18 @@ func (p *postgres) Connect() (*sql.DB, error) {
 		return nil, err
 	}
 
-	err = db.Ping()
-	if err != nil {
-		return nil, err
+	for p.connAttempts > 0 {
+		err = db.PingContext(context.Background())
+
+		if err == nil {
+			break
+		}
+
+		log.Printf("Postgres is trying to connect, attempts left: %d", p.connAttempts)
+
+		time.Sleep(p.connTimeout)
+
+		p.connAttempts--
 	}
 
 	return db, err

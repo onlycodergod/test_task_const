@@ -4,14 +4,14 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/onlycodergod/payment-api-emulator/pkg/loggin"
 )
 
-// Он создает новый экземпляр миграции, а затем запускает миграцию
 func InitMigrate(logger loggin.ILogger, options DBOptions) {
 	dsn := getDSN(options)
 
-	if len(dsn) == 0 {
+	if dsn == "" {
 		logger.Fatal("migrate: environment variable not declared")
 	}
 

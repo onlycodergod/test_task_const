@@ -6,31 +6,24 @@ import (
 	"time"
 )
 
-// Это структура, содержащая указатель на http.Server, канал ошибок и time.Duration.
-// @property server - Это фактический HTTP-сервер, который будет прослушивать запросы.
-// @property notify - Это канал, который будет использоваться для уведомления основной горутины об
-// остановке сервера.
-// @property shutdownTimeout - Время ожидания завершения работы сервера перед возвратом ошибки.
-type server struct {
+type Server struct {
 	server          *http.Server
 	notify          chan error
 	shutdownTimeout time.Duration
 }
 
-// > Эта функция создает новый HTTP-сервер с заданным обработчиком, портом, тайм-аутом чтения,
-// тайм-аутом записи и временем завершения работы.
-func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout, shutdownTime time.Duration) *server {
+func NewHTTPServer(handler http.Handler, port string, readTimeout, writeTimeout, shutdownTime time.Duration) *Server {
 	httpServer := &http.Server{
 		Addr:         ":" + port,
 		Handler:      handler,
-		ReadTimeout:  readTimeout * time.Second,
-		WriteTimeout: writeTimeout * time.Second,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
 	}
 
-	serv := &server{
+	serv := &Server{
 		server:          httpServer,
 		notify:          make(chan error, 1),
-		shutdownTimeout: shutdownTime * time.Second,
+		shutdownTimeout: shutdownTime,
 	}
 
 	serv.start()
@@ -38,21 +31,18 @@ func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout,
 	return serv
 }
 
-// Он запускает сервер в горутине.
-func (s *server) start() {
+func (s *Server) start() {
 	go func() {
 		s.notify <- s.server.ListenAndServe()
 		close(s.notify)
 	}()
 }
 
-// Возврат канала только для чтения.
-func (s *server) Notify() <-chan error {
+func (s *Server) Notify() <-chan error {
 	return s.notify
 }
 
-// Выключение сервера.
-func (s *server) Shutdown() error {
+func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
 

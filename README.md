@@ -33,7 +33,7 @@ func (c *controller) CreatePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := c.UseCase.CreatePayment(
+	id, err := c.usecase.CreatePayment(
 		r.Context(),
 		input,
 	)
@@ -62,7 +62,7 @@ func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 
 	input.ID = PaymentID
 
-	err = c.UseCase.UpdateStatus(
+	err = c.usecase.UpdateStatus(
 		r.Context(),
 		input,
 	)
@@ -87,7 +87,7 @@ func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := c.UseCase.GetStatus(
+	status, err := c.usecase.GetStatus(
 		r.Context(),
 		PaymentID,
 	)
@@ -117,7 +117,7 @@ func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	data, err := c.UseCase.GetPayments(
+	data, err := c.usecase.GetPayments(
 		r.Context(),
 		PaymentUser{
 			UserID: userID,
@@ -149,7 +149,7 @@ func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	data, err := c.UseCase.GetPayments(
+	data, err := c.usecase.GetPayments(
 		r.Context(),
 		PaymentUser{
 			UserEmail: UserEmail,
@@ -181,7 +181,7 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.UseCase.CancelPayment(
+	err = c.usecase.CancelPayment(
 		r.Context(),
 		PaymentID,
 	)

@@ -18,7 +18,6 @@ func TestCreatePayment(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
-	// Создание фиктивного подключения к базе данных.
 	defer db.Close()
 
 	r := NewPaymentRepository(db)
