@@ -6,7 +6,7 @@ CamelCase
 ```
  Что нужно для запуска проекта:
     1. Docker
-    2. Docker-compose (version by - support 3.9 verion file)
+    2. Docker-compose v3.9+
 
  Запуск проекта:
  ```sh
@@ -192,6 +192,6 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
  
  Дизайн архитектуры и работы транзакций
 ```
- <a href="https://ibb.co/w7PHgQ4" target="_blank"><img src="https://i.ibb.co/xYBvLg6/photo-diagram-project.jpg" target="_blank"></a> 
+![photo_diagram_project](https://user-images.githubusercontent.com/72939315/174302662-8be838d9-4271-40d0-9acb-384aaf0b0fae.jpg)
 ```
 
