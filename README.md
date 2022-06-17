@@ -11,7 +11,6 @@ CamelCase
  Запуск проекта:
  ```sh
     1. sudo make compose-up
-    2. make run
 ```
 
  API 
@@ -193,5 +192,6 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
  
  Дизайн архитектуры и работы транзакций
 ```
-<a href="https://ibb.co/w7PHgQ4"><img src="https://i.ibb.co/xYBvLg6/photo-diagram-project.jpg" alt="photo-diagram-project" border="0"></a>
+ <a href="https://ibb.co/w7PHgQ4" target="_blank"><img src="https://i.ibb.co/xYBvLg6/photo-diagram-project.jpg" target="_blank"></a> 
 ```
+
