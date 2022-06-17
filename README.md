@@ -73,6 +73,7 @@ func (c *controller) UpdateStatus(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
+
     3. "/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
    
 ```go
@@ -102,6 +103,7 @@ func (c *controller) GetStatus(w http.ResponseWriter, r *http.Request) {
 	)
 }
 ```
+
 
     4. "/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
     
@@ -135,6 +137,7 @@ func (c *controller) GetPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 }
 ```
 
+
     5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
     
 ```go
@@ -167,6 +170,7 @@ func (c *controller) GetPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 }
 ```
 
+
     6. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
     
 ```go
@@ -192,6 +196,7 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 ```
+
 
  Архитектура проекта из соображений:
  
