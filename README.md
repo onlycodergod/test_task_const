@@ -200,7 +200,7 @@ func (c *controller) CancelPayment(w http.ResponseWriter, r *http.Request) {
     1. https://github.com/golang-standards/project-layout
     2. https://github.com/moby/moby
     3. https://github.com/digitalocean
-	 4. https://github.com/evrone/go-clean-template
+    4. https://github.com/evrone/go-clean-template
  ```
  
 ### Дизайн архитектуры и работы транзакций исходя из технического задания:
